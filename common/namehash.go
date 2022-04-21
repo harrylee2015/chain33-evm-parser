@@ -1,4 +1,4 @@
-package kns
+package common
 
 import (
 	"strings"

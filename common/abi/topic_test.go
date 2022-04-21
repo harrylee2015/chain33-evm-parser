@@ -409,7 +409,7 @@ func Test_MakeTopics( t *testing.T){
 		topics=append(topics,hash)
 	}
 	outMap := make(map[string]interface{})
-	err = ParseTopicsIntoMap(outMap, abi.Events["Transfer"].Inputs, topics);
+	err = ParseTopicsIntoMap(outMap, abi.Events["Transfer"].Inputs, topics)
 	if  err !=nil {
 		t.Error(err)
 	}
