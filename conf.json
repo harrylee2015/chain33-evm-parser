@@ -15,7 +15,7 @@
     "type": 4,
     "encode": "jrpc",
     "contracts": ["1KE2RiaVfJcZYYt8XQ1xaRuNVkdtHxUzu4"],
-    "lastSequence": "",
+    "lastSequence": 0,
     "lastHeight": 0,
     "lastBlockHash": ""
   }
