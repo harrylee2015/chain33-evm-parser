@@ -90,8 +90,6 @@ type Handler struct {
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("OK"))
-
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(200)
 	if len(r.Header["Content-Encoding"]) >= 1 && r.Header["Content-Encoding"][0] == "gzip" {

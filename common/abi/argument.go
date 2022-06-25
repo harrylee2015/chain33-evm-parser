@@ -84,6 +84,16 @@ func (arguments Arguments) NonIndexed() Arguments {
 	return ret
 }
 
+// Indexed returns the arguments with indexed arguments
+func (arguments Arguments) Indexed() Arguments {
+	var ret []Argument
+	for _, arg := range arguments {
+		if arg.Indexed {
+			ret = append(ret, arg)
+		}
+	}
+	return ret
+}
 // isTuple returns true for non-atomic constructs, like (uint,uint) or uint[]
 func (arguments Arguments) isTuple() bool {
 	return len(arguments) > 1

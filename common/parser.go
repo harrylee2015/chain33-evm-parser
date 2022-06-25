@@ -39,13 +39,32 @@ func ParseTopics(event abi.Event, topics []string) (map[string]interface{}, erro
 		return nil, fmt.Errorf("It's not a listen event!")
 	}
 	outMap := make(map[string]interface{})
-	err := abi.ParseTopicsIntoMap(outMap, event.Inputs, hashs[1:])
+	err := abi.ParseTopicsIntoMap(outMap, event.Inputs.Indexed(), hashs[1:])
 	if err != nil {
 		return outMap, fmt.Errorf("ParseTopics have a err: %s /n", err.Error())
 	}
 	return outMap, nil
 }
-
+func ParseEvent(event abi.Event, evmLog *types.EVMLog) (map[string]interface{}, error) {
+	var hashs []common.Hash
+	for _, topic := range evmLog.GetTopic() {
+		hashs = append(hashs, common.BytesToHash(topic))
+	}
+	outMap := make(map[string]interface{})
+	//解析topics
+	err := abi.ParseTopicsIntoMap(outMap, event.Inputs.Indexed(), hashs[1:])
+	if err != nil {
+		return outMap, fmt.Errorf("ParseTopics have a err: %s /n", err.Error())
+	}
+	//解析非索引参数值
+	if evmLog.GetData() !=nil{
+		err := event.Inputs.UnpackIntoMap(outMap,evmLog.GetData())
+		if err != nil {
+			return outMap, fmt.Errorf("ParseTopics have a err: %s /n", err.Error())
+		}
+	}
+	return outMap, nil
+}
 //直接解析evm订阅事件
 func ParseEVMTxLogs(blks *types.EVMTxLogsInBlks, parseMap *ParseMap) map[string]*ParseTxResult {
 	//txhash--->contractAddr--->eventID--->paramName--->value
@@ -64,12 +83,7 @@ func ParseEVMTxLogs(blks *types.EVMTxLogsInBlks, parseMap *ParseMap) map[string]
 					//从topicsEvent中匹配相关事件
 					if event, ok := topicsEvent[common.BytesToHash(evmLog.GetTopic()[0])]; ok {
 						results[common.Bytes2Hex(tx.Hash())].ParseContractMap[evmAction.ContractAddr] = make(map[common.Hash]map[string]interface{})
-						var hashs []common.Hash
-						for _, topic := range evmLog.GetTopic() {
-							hashs = append(hashs, common.BytesToHash(topic))
-						}
-						outMap := make(map[string]interface{})
-						err := abi.ParseTopicsIntoMap(outMap, event.Inputs, hashs[1:])
+						outMap,err := ParseEvent(event,evmLog)
 						if err != nil {
 							continue
 						}
@@ -78,12 +92,10 @@ func ParseEVMTxLogs(blks *types.EVMTxLogsInBlks, parseMap *ParseMap) map[string]
 				}
 				//如果定义存在订阅事件
 				if event, ok := parseMap.TopicsEventMap[common.BytesToHash(evmLog.GetTopic()[0])]; ok {
-					var hashs []common.Hash
-					for _, topic := range evmLog.GetTopic() {
-						hashs = append(hashs, common.BytesToHash(topic))
+					outMap,err := ParseEvent(event,evmLog)
+					if err != nil {
+						continue
 					}
-					outMap := make(map[string]interface{})
-					err := abi.ParseTopicsIntoMap(outMap, event.Inputs, hashs[1:])
 					if err != nil {
 						continue
 					}
@@ -135,12 +147,7 @@ func ParseBlockReceipts(reqs *types.BlockSeqs, parseMap *ParseMap) map[string]*P
 					//从topicsEvent中匹配相关事件
 					if event, ok := topicsEvent[common.BytesToHash(evmLog.GetTopic()[0])]; ok {
 						results[common.Bytes2Hex(tx.Hash())].ParseContractMap[evmAction.ContractAddr] = make(map[common.Hash]map[string]interface{})
-						var hashs []common.Hash
-						for _, topic := range evmLog.GetTopic() {
-							hashs = append(hashs, common.BytesToHash(topic))
-						}
-						outMap := make(map[string]interface{})
-						err := abi.ParseTopicsIntoMap(outMap, event.Inputs, hashs[1:])
+						outMap,err := ParseEvent(event,&evmLog)
 						if err != nil {
 							continue
 						}
@@ -149,12 +156,7 @@ func ParseBlockReceipts(reqs *types.BlockSeqs, parseMap *ParseMap) map[string]*P
 				}
 				//如果定义存在订阅事件
 				if event, ok := parseMap.TopicsEventMap[common.BytesToHash(evmLog.GetTopic()[0])]; ok {
-					var hashs []common.Hash
-					for _, topic := range evmLog.GetTopic() {
-						hashs = append(hashs, common.BytesToHash(topic))
-					}
-					outMap := make(map[string]interface{})
-					err := abi.ParseTopicsIntoMap(outMap, event.Inputs, hashs[1:])
+					outMap,err := ParseEvent(event,&evmLog)
 					if err != nil {
 						continue
 					}

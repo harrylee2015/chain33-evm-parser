@@ -101,22 +101,21 @@ func Test_labes(t *testing.T) {
 
 
 	//t.Log(common.BytesToHash().Hex())
-	//t.Log(crypto.Keccak256Hash([]byte("bty")).String())
-	//t.Log(crypto.Keccak256Hash([]byte("eth")).String())
-	//t.Log(crypto.Keccak256Hash([]byte("wallet2015")).String())
-	//t.Log(crypto.Keccak256Hash([]byte("wallet2015")).Big())
+	t.Log(crypto.Keccak256Hash([]byte("bty")).String())
+	t.Log(crypto.Keccak256Hash([]byte("eth")).String())
+	t.Log(crypto.Keccak256Hash([]byte("wallet2015")).String())
+	t.Log(crypto.Keccak256Hash([]byte("wallet2015")).Big())
 	//t.Log(NameHash("1725.eth"))
 
 	//t.Log(crypto.Keccak256Hash([]byte("alice")).String())
 	//t.Log(NameHash("alice.wallet.bty").String())
 	//
 	//
-	//t.Log("------------------------------------")
-	//t.Log(NameHash("eth").String())
-	//t.Log(crypto.Keccak256Hash([]byte("eth")).String())
+	t.Log("------------------------------------")
+	t.Log(crypto.Keccak256Hash([]byte("yuan")).String())
+	t.Log(NameHash("yuan").String())
 	//t.Log(crypto.Keccak256Hash(hash.Bytes(),crypto.Keccak256Hash([]byte("eth")).Bytes()).String())
 	//t.Log(crypto.Keccak256Hash([]byte("test")).String())
-	//
 	//t.Log(common.Address{}.Bytes())
 
 	//t.Log(NameHash("test.eth").String())
